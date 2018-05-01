@@ -87,15 +87,17 @@ int main(void) {
 		FILE *outputfile;
 		outputfile = fopen(outputname, "w"); //w means the file is created. If another file exists with the same name it is deleted.
 		totallinecounter = 0;
-
-
-
-		while((curr = getc(inputfile)) != EOF){
+		while(curr != EOF){
+			curr = 0, prev = 0, NumberX = 0, NumberO = 0,
+					NumberATo = 0, NumberATx = 0, MAXIMUM = 0, linecounter = -1, prevLineCounter = 0, switchcounter = 0;
+			fseek(inputfile,totallinecounter, SEEK_SET);
+		while((curr = getc(inputfile)) != EOF && curr != 10){
 			fprintf(outputfile, "%c", curr);
 			TheMagic();
 		}
-
-		fseek(inputfile, 0, SEEK_SET); //Let's read from the beginning
+		int temp = ftell(inputfile);
+		fseek(inputfile, totallinecounter, SEEK_SET); //Let's read from the beginning
+		totallinecounter = temp;
 		linecounter = -1;
 		switchcounter = 0;
 
@@ -105,6 +107,7 @@ int main(void) {
 
 		fprintf(outputfile,"\n%d between stone %d and stone %d\n", maks.length, maks.linenumber, maks.linenumber+1);
 
+		}
 		//Closes the files and opens the .sol file
 		fclose(outputfile);
 		fclose(inputfile);
