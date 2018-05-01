@@ -21,7 +21,7 @@ typedef struct {
 
 //These should not.
 int curr = 0, prev = 0, NumberX = 0, NumberO = 0,
-		NumberATo = 0, NumberATx = 0, MAXIMUM = 0, linecounter = -1, prevLineCounter = 0, switchcounter = 0, totallinecounter = 0;
+		NumberATo = 0, NumberATx = 0, MAXIMUM = 0, linecounter = -1, prevLineCounter = 0, switchcounter = 0, totallinecounter = 0, breaker = 1;
 Point maks;
 
 void TheMagic(){
@@ -87,21 +87,24 @@ int main(void) {
 		FILE *outputfile;
 		outputfile = fopen(outputname, "w"); //w means the file is created. If another file exists with the same name it is deleted.
 		totallinecounter = 0;
-		while(curr != EOF){
+
+		while(breaker != -1){
 			curr = 0, prev = 0, NumberX = 0, NumberO = 0,
 					NumberATo = 0, NumberATx = 0, MAXIMUM = 0, linecounter = -1, prevLineCounter = 0, switchcounter = 0;
 			fseek(inputfile,totallinecounter, SEEK_SET);
+
 		while((curr = getc(inputfile)) != EOF && curr != 10){
 			fprintf(outputfile, "%c", curr);
 			TheMagic();
 		}
+		breaker = curr;
 		int temp = ftell(inputfile);
 		fseek(inputfile, totallinecounter, SEEK_SET); //Let's read from the beginning
 		totallinecounter = temp;
 		linecounter = -1;
 		switchcounter = 0;
 
-		while(((curr = getc(inputfile)) != EOF) && switchcounter < 2){
+		while(((curr = getc(inputfile)) != EOF) && curr != 10){
 			TheMagic();
 		}
 
