@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <io.h>
 /*
+
                  \   /
                  .\-/.
              /\  () ()  /\
@@ -16,11 +17,11 @@
 typedef struct {
 	int length, linenumber;
 } Point;
-//Only these should be stuffed into NECKLACE.sol.
+//Only these should be stuffed into NECKLACE.sol. This is why they are in their own struct.
 
 //These should not.
 int curr = 0, prev = 0, NumberX = 0, NumberO = 0,
-		NumberATo = 0, NumberATx = 0, MAXIMUM = 0, linecounter = -1, prevLineCounter = 0, switchcounter = 0;
+		NumberATo = 0, NumberATx = 0, MAXIMUM = 0, linecounter = -1, prevLineCounter = 0, switchcounter = 0, totallinecounter = 0;
 Point maks;
 
 void TheMagic(){
@@ -73,7 +74,7 @@ void TheMagic(){
 int main(void) {
 	//DO NOT, i repeat DO NOT touch these 3 lines. they took me 45 mins to make.
 	char *value = getenv("USERNAME");
-	char inputname[33+sizeof(value)];
+	char inputname[36+sizeof(*value)];
 	snprintf(inputname, sizeof(inputname), "%s%s%s", "C:\\Users\\", value, "\\Desktop\\NECKLACE.dat");
 
 	FILE *inputfile;
@@ -81,17 +82,20 @@ int main(void) {
 
 	if(inputfile){
 
-		char outputname[33+sizeof(value)];
+		char outputname[36+sizeof(*value)];
 		snprintf(outputname, sizeof(outputname), "%s%s%s", "C:\\Users\\", value, "\\Desktop\\NECKLACE.sol");
 		FILE *outputfile;
 		outputfile = fopen(outputname, "w"); //w means the file is created. If another file exists with the same name it is deleted.
+		totallinecounter = 0;
 
-		while((curr = getc(inputfile)) != 10){
+
+
+		while((curr = getc(inputfile)) != EOF){
 			fprintf(outputfile, "%c", curr);
 			TheMagic();
 		}
 
-		fseek(inputfile, -1, SEEK_SET); //Let's read from the beginning
+		fseek(inputfile, 0, SEEK_SET); //Let's read from the beginning
 		linecounter = -1;
 		switchcounter = 0;
 
@@ -100,9 +104,10 @@ int main(void) {
 		}
 
 		fprintf(outputfile,"\n%d between stone %d and stone %d\n", maks.length, maks.linenumber, maks.linenumber+1);
+
+		//Closes the files and opens the .sol file
 		fclose(outputfile);
 		fclose(inputfile);
-
 		system(outputname);
 	}
 	//Creates a file and shows it to the user.
