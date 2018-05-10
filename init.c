@@ -119,19 +119,21 @@ int main(){
 	}
 	int j;
 	for(i = numberofroofs-1; i >=0; i--){
-
 		if((rain[roofs[i].left.x] == 1) && (rain[roofs[i].right.x] == 1)){
 			*roofs[i].weight -=1;
 		}
 		for(j = roofs[i].left.x; j <= roofs[i].right.x; j++){
 			*roofs[i].weight += rain[j-leftmost];
-			rain[j-leftmost] = 0;
+//			rain[j-leftmost] = 0;
+			if (j != roofs[i].right.x){
+				rain[j-leftmost] = 0;
+			}
 
 		}
-		rain[findHighLowX(roofs, i, 0)-leftmost] = *roofs[i].weight;
-		if(roofs[i].left.y < roofs[i].right.y){
-			rain[findHighLowX(roofs, i, 0)-leftmost] +=1;
-		}
+		rain[findHighLowX(roofs, i, 0)-leftmost] += *roofs[i].weight;
+//		if(roofs[i].left.y < roofs[i].right.y){
+//			rain[findHighLowX(roofs, i, 0)-leftmost] +=1;
+//		}
 	}
 
 	//Printing
