@@ -12,12 +12,12 @@ typedef struct {
 	int* weight;
 } line;
 
-int findHighest(line* arr, int index, int high) {
-	if(high == 1){
+int findHighLowY(line* arr, int index, int high) {
+	if(high == 1){ //return highest
 		if(arr[index].left.y < arr[index].right.y) {
 			return arr[index].right.y;
 		}
-		else{
+		else{ // return lowest
 			return arr[index].left.y;
 		}
 	}
@@ -31,58 +31,99 @@ int findHighest(line* arr, int index, int high) {
 	}
 }
 
+int findHighLowX(line* arr, int index, int high) {
+	int x = 0;
+	if(high == 1){
+		x = 1;
+	}
+	if(arr[index].left.x == findHighLowY(arr, index, x)){
+		return arr[index].left.x;
+	}
+	else{
+		return arr[index].right.x;
+	}
+
+}
+
+void swap(line* arr, int x, int y){
+	line temp = arr[y];
+	arr[y] = arr[x];
+	arr[x] = temp;
+}
+
 void insertionSort(line* arr, int n)
 {
-	int i, key, j;
-	for (i = n-1; i > 0; i--)
+	int i, j;
+	for (i = 1; i < n; i++)
 	{
-		key = findHighest(arr, i, 1);
-		j = i+1;
-
-		while (j <= n && findHighest(arr, j, 1) > key)
-		{
-			arr[j-1] = arr[j];
-			j = j+1;
-		}
-
-		if(arr[j-1].left.y < arr[j-1].right.y){
-			arr[j-1].right.y = key;
-		}
-		else{
-			arr[j-1].left.y = key;
-		}
-
+		j = i;
+				while (j > 0 && findHighLowY(arr, j-1, 1) > findHighLowY(arr, j, 1))
+				{
+					swap(arr, j-1, j);
+					j -=1;
+				}
 	}
 }
+
+double linear(line* arr, int index, int ekstra){
+	double a = (arr[index].left.y-arr[index].right.y) / (arr[index].left.x-arr[index].right.x);
+	double b = arr[index].left.y - (a * arr[index].left.x);
+	return (a * findHighLowX(arr, ekstra, 1)) + b;
+}
+
+void specialSort(line* arr, int n){
+	int i, j;
+	for(i = n-1; i >=0; i--){
+		for(j = i-1; j > 0; j--){
+			if((findHighLowY(arr, j, 1) * 1.0 > linear(arr,i,j)) && ((arr[i].left.x < findHighLowX(arr, j, 1)) && findHighLowX(arr, j, 1) < arr[i].left.x)){
+				int position = j;
+				while(position < i){
+					swap(arr, position, position+1);
+					position++;
+				}
+			}
+		}
+	}
+}
+
 int main(){
 	//Variables
-	int numberofroofs;
+	int numberofroofs = 0, leftmost = 2147483647, rightmost = 0, i;
 	scanf("%d", &numberofroofs);
 	int* waterweight = (int*)calloc(numberofroofs, sizeof(int));
 	line* roofs = (line*)calloc(numberofroofs, sizeof(line));
 
 	//Init
-	for(int i = 0; i < numberofroofs; i++) {
+	if(numberofroofs == 0){
+		leftmost = 0;
+	}
+	for(i = 0; i < numberofroofs; i++) {
 		scanf("%d %d %d %d", &roofs[i].left.x, &roofs[i].left.y, &roofs[i].right.x, &roofs[i].right.y);
-		waterweight[i] = roofs[i].right.x - roofs[i].left.x;
+		if(roofs[i].left.x < leftmost){
+			leftmost = roofs[i].left.x;
+		}
+		if(roofs[i].right.x > rightmost){
+			rightmost = roofs[i].right.x;
+		}
 		*roofs[i].weight = waterweight[i];
 	}
 
 	//Sorting
 	insertionSort(roofs, numberofroofs);
+	specialSort(roofs, numberofroofs);
 
 	//Calculating
-    for(int i = 0; i < numberofroofs; i++){
-    	char* temp = (char*)calloc(roofs[i].right.x - roofs[i].left.x + 1, sizeof(char));
-    	for(int j = 0; j < numberofroofs; j++) {
-    		if(roofs[i].) {
+	int* rain = (int*)calloc(rightmost-leftmost, sizeof(int));
+	for(i = 0; i < numberofroofs; i++){
+		*(rain+i) = 1;
+	}
 
-    		}
-    	}
-    	free(temp);
-    }
+	for(i = numberofroofs -1; i >=0; i--){
+
+	}
+
 	//Printing
-	for(int i = 0; i < numberofroofs; i++){
+	for(i = 0; i < numberofroofs; i++){
 		printf("%d", waterweight[i]);
 	}
 
