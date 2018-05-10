@@ -36,7 +36,7 @@ int findHighLowX(line* arr, int index, int high) {
 	if(high == 1){
 		x = 1;
 	}
-	if(arr[index].left.x == findHighLowY(arr, index, x)){
+	if(arr[index].left.y == findHighLowY(arr, index, x)){
 		return arr[index].left.x;
 	}
 	else{
@@ -113,18 +113,25 @@ int main(){
 	specialSort(roofs, numberofroofs);
 
 	//Calculating
-	int* rain = (int*)calloc(rightmost-leftmost, sizeof(int));
+	int* rain = (int*)calloc(rightmost-leftmost+1, sizeof(int));
 	for(i = 0; i < rightmost-leftmost; i++){
 		*(rain+i)=1;
 	}
 	int j;
 	for(i = numberofroofs-1; i >=0; i--){
-		printf("%d\n", roofs[i].left.x);
-		for(j = roofs[i].left.x; j < roofs[i].right.x; j++){
+
+		if((rain[roofs[i].left.x] == 1) && (rain[roofs[i].right.x] == 1)){
+			*roofs[i].weight -=1;
+		}
+		for(j = roofs[i].left.x; j <= roofs[i].right.x; j++){
 			*roofs[i].weight += rain[j-leftmost];
 			rain[j-leftmost] = 0;
+
 		}
 		rain[findHighLowX(roofs, i, 0)-leftmost] = *roofs[i].weight;
+		if(roofs[i].left.y < roofs[i].right.y){
+			rain[findHighLowX(roofs, i, 0)-leftmost] +=1;
+		}
 	}
 
 	//Printing
