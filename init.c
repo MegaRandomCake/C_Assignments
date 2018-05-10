@@ -105,7 +105,7 @@ int main(){
 		if(roofs[i].right.x > rightmost){
 			rightmost = roofs[i].right.x;
 		}
-		*roofs[i].weight = waterweight[i];
+		roofs[i].weight = &waterweight[i];
 	}
 
 	//Sorting
@@ -114,26 +114,22 @@ int main(){
 
 	//Calculating
 	int* rain = (int*)calloc(rightmost-leftmost, sizeof(int));
+	for(i = 0; i < rightmost-leftmost; i++){
+		*(rain+i)=1;
+	}
 	int j;
-	for(i = n-1; i >=0; i){
-		for(j = roofs[i].left.x; j < roofs[i].right.x; j--){
-			roofs[i].weight += rain[j-leftmost];
+	for(i = numberofroofs-1; i >=0; i--){
+		printf("%d\n", roofs[i].left.x);
+		for(j = roofs[i].left.x; j < roofs[i].right.x; j++){
+			*roofs[i].weight += rain[j-leftmost];
 			rain[j-leftmost] = 0;
 		}
-		rain[findHighLowX(roofs, i, 0)-leftmost] = roofs[i].weight;
-
-	}
-
-	for(i = numberofroofs -1; i >=0; i--){
-
+		rain[findHighLowX(roofs, i, 0)-leftmost] = *roofs[i].weight;
 	}
 
 	//Printing
 	for(i = 0; i < numberofroofs; i++){
-		printf("%d", waterweight[i]);
+		printf("%d\n", waterweight[i]);
 	}
-
-
 	return 0;
-
 }
