@@ -17,28 +17,28 @@ void capturing(){
 		time_t rawtime;
 		char *c_time_string;
 		FILE *config;
-		config = fopen("config.txt", "r");
-		IplImage *current = 0;
+		config = fopen("config.txt", "r"); //opens file "config"
+		IplImage *current = 0; //initialises an image "current"
 		c_time_string = (char*) calloc(20, sizeof(char));
 		int i = 0, j = 0;
 		int configs[4] = {-1,-1,-1,-1};
-		current = cvQueryFrame( capture );
+		current = cvQueryFrame( capture ); //sets current to the current frame from the camera
 		int w = current->width, h = current->height;
 		int change = ((w*h) / 100) / 2;
 		char indexnumber[8] = {"      \n"};
-		IplImage* previous = cvCreateImage(cvSize(w, h), 8, 1);
-		IplImage* res = cvCreateImage(cvSize(w, h), 8, 1);
-		IplImage* endres = cvCreateImage(cvSize(w, h), 8, 1);
-		IplImage* endendres = cvCreateImage(cvSize(w, h), 8, 1);
+		IplImage* previous = cvCreateImage(cvSize(w, h), 8, 1); //initialises an image "previous"
+		IplImage* res = cvCreateImage(cvSize(w, h), 8, 1); //initialises an image "res" (short for result)
+		IplImage* endres = cvCreateImage(cvSize(w, h), 8, 1); //initialises an image "endres" (short for endresult)
+		IplImage* endendres = cvCreateImage(cvSize(w, h), 8, 1); //initialises an image "endendres" (short for end-endresult)
 		CvFont base_font;
 		CvScalar color;
-		cvInitFont( &base_font, CV_FONT_HERSHEY_SIMPLEX, 1.5, 1.5, 0, 1, 8);
+		cvInitFont( &base_font, CV_FONT_HERSHEY_SIMPLEX, 1.5, 1.5, 0, 1, 8); //initialises font Hershey Simplex
 
-		cvCvtColor(current, res, CV_BGR2GRAY);
+		cvCvtColor(current, res, CV_BGR2GRAY); //initialises an image "res" (short for result)
 		
 		while(1)
 		{
-			current = cvQueryFrame( capture ); //set current to the current frame from the camera
+			current = cvQueryFrame( capture ); //convert current picture to grayscale
 			if(!current){
 				printf("Stream not found");
 				break;
@@ -62,21 +62,21 @@ void capturing(){
 				}
 			int m = cvCountNonZero(endendres); //set int m to total number of differing pixels in our end result "image"
 			if(m > change){
-				time(&rawtime);
+				time(&rawtime); //gets time
 				info = localtime(&rawtime);
 				//YYYY-MM-DD hh:mm:ss
-				strftime(c_time_string, 20, "%Y-%m-%d %X", info);
+				strftime(c_time_string, 20, "%Y-%m-%d %X", info); //converts time to string "c_time_string"
 				fprintf(logfil, "%s\n", c_time_string); // print current time to log
-				fflush(logfil);
-				sprintf(indexnumber, "%d", numberofcaptures++);
-				fseek(logfil, 0, SEEK_SET);
-				fprintf(logfil, "%s\n", indexnumber);
+				fflush(logfil); //flushes logfile from memory, so it isn't open, and therefore isn't read-only
+				sprintf(indexnumber, "%d", numberofcaptures++); //writes day to string "indexnumber"
+				fseek(logfil, 0, SEEK_SET); 
+				fprintf(logfil, "%s\n", indexnumber);  //writes "c_time_string" to string "indexnumber"
 				fflush(logfil);
 				fseek(logfil, 0, SEEK_END);
-				imagenumber++;
-				int integerlength = floor(log10(abs(imagenumber))) + 1;
-				char imagename[10+integerlength];
-				snprintf(imagename, sizeof(imagename), "%s%d%s", "image", imagenumber, ".jpg");
+				imagenumber++; //advances imagenumber by one for filename purposes
+				int integerlength = floor(log10(abs(imagenumber))) + 1; //sets integerlength to count of numeric ciphers in number (e.g. 12 = 2, 2423 = 4, 1543478
+= 7				char imagename[10+integerlength]; //sets imagename to length of integerlength, plus 10 characters for other purposes
+				snprintf(imagename, sizeof(imagename), "%s%d%s", "image", imagenumber, ".jpg"); //sets size of imagename
 				color = CV_RGB(235,235,235);
 				cvPutText(current, c_time_string, cvPoint( 10, 50 ), &base_font, color); //hardprint current time and date to picture
 				cvSaveImage(imagename, current, 0);
