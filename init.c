@@ -73,19 +73,14 @@ void TheMagic(){
 
 int main(void) {
 	//DO NOT, i repeat DO NOT touch these 3 lines. they took me 45 mins to make.
-	char *value = getenv("USERNAME");
-	char inputname[36+sizeof(*value)];
-	snprintf(inputname, sizeof(inputname), "%s%s%s", "C:\\Users\\", value, "\\Desktop\\NECKLACE.dat");
 
 	FILE *inputfile;
-	inputfile = fopen(inputname, "r");
+	inputfile = fopen(NECKLACE.dat, "r");
 
 	if(inputfile){
 
-		char outputname[36+sizeof(*value)];
-		snprintf(outputname, sizeof(outputname), "%s%s%s", "C:\\Users\\", value, "\\Desktop\\NECKLACE.sol");
 		FILE *outputfile;
-		outputfile = fopen(outputname, "w"); //w means the file is created. If another file exists with the same name it is deleted.
+		outputfile = fopen(NECKLACE.sol, "w"); //w means the file is created. If another file exists with the same name it is deleted.
 		totallinecounter = 0;
 
 		while(breaker != -1){
@@ -118,7 +113,7 @@ int main(void) {
 	}
 	//Creates a file and shows it to the user.
 	else{
-		inputfile = fopen(inputname, "a");
+		inputfile = fopen(NECKLACE.dat, "a");
 		fprintf(inputfile, "This file have been created on your desktop, to draw a beautiful necklace consisting of 'x', 'o' and '@'."
 				"\nPlease make a necklace, save it and restart the application."
 				"\nRemember to delete this .dat file and the .sol result file when done with the application.");
