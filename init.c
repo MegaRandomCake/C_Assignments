@@ -37,15 +37,15 @@ void capturing(){
 		
 		while(1)
 		{
-			current = cvQueryFrame( capture );
+			current = cvQueryFrame( capture ); //set current to the current frame from the camera
 			if(!current){
 				printf("Stream not found");
 				break;
 			}
-			cvCopy(res, previous, CV_8UC1);
-			cvCvtColor(current, res, CV_BGR2GRAY);
-			cvAbsDiff(previous, res, endres);
-			cvThreshold(endres, endendres, 20, 255, CV_THRESH_BINARY | CV_THRESH_TOZERO);
+			cvCopy(res, previous, CV_8UC1); //copy res to previous, setting the former frame to previous.
+			cvCvtColor(current, res, CV_BGR2GRAY); //convert current picture to grayscale
+			cvAbsDiff(previous, res, endres); //find any differing pixels between previous frame and current frame
+			cvThreshold(endres, endendres, 20, 255, CV_THRESH_BINARY | CV_THRESH_TOZERO); //set a threshold to limit random noise and small inconsquential changes
 			if(config){
 				color = CV_RGB(0,0,0);
 				int configlength = 0;
@@ -59,23 +59,23 @@ void capturing(){
 						}
 					}
 				}
-			int m = cvCountNonZero(endendres);
-			if(m > change){
+			int m = cvCountNonZero(endendres); //set int m to number of differing pixels in our end result "image"
+			if(m > change){ 
 				time(&rawtime);
 				info = localtime(&rawtime);
 				//YYYY-MM-DD hh:mm:ss
-				strftime(c_time_string, 20, "%Y-%m-%d %X", info);
-				fprintf(log, "%s\n", c_time_string);
-				fflush(log);
-				imagenumber++;
-				int integerlength = floor(log10(abs(imagenumber))) + 1;
+				strftime(c_time_string, 20, "%Y-%m-%d %X", info); 
+				fprintf(log, "%s\n", c_time_string); // print current time to log
+				fflush(log); 
+				imagenumber++; 
+				int integerlength = floor(log10(abs(imagenumber))) + 1; 
 				char imagename[10+integerlength];
 				snprintf(imagename, sizeof(imagename), "%s%d%s", "image", imagenumber, ".jpg");
-				strftime(c_time_string, 25, "%c", info);
+				strftime(c_time_string, 25, "%c", info); 
 				color = CV_RGB(235,235,235);
-				cvPutText(current, c_time_string, cvPoint( 10, 50 ), &base_font, color);
-				cvSaveImage(imagename, current, 0);
-				cvReleaseCapture(&capture);
+				cvPutText(current, c_time_string, cvPoint( 10, 50 ), &base_font, color); //hardprint current time and date to picture
+				cvSaveImage(imagename, current, 0); 
+				cvReleaseCapture(&capture); //stop camera until restarted in next loop
 				break;
 				
 			}
