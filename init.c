@@ -73,9 +73,9 @@ double linear(line* arr, int index, int ekstra){
 
 void specialSort(line* arr, int n){
 	int i, j;
-	for(i = n-1; i >=0; i--){
-		for(j = i-1; j > 0; j--){
-			if((findHighLowY(arr, j, 1) * 1.0 > linear(arr,i,j)) && ((arr[i].left.x < findHighLowX(arr, j, 1)) && findHighLowX(arr, j, 1) < arr[i].left.x)){
+	for(i = n-1; i > 0; i--){
+		for(j = i-1; j >= 0; j--){
+			if((findHighLowY(arr, j, 1) * 1.0 > linear(arr,i,j)) && ((arr[i].left.x < findHighLowX(arr, j, 1)) && findHighLowX(arr, j, 1) < arr[i].right.x)){
 				int position = j;
 				while(position < i){
 					swap(arr, position, position+1);
@@ -107,7 +107,13 @@ int main(){
 		}
 		roofs[i].weight = &waterweight[i];
 	}
-
+	
+	int piping[rightmost-leftmost][2];
+	for (i = 0; i < (rightmost-leftmost); i++){
+	    piping[i][0]=i;
+	    piping[i][1]=0;
+	}
+	
 	//Sorting
 	insertionSort(roofs, numberofroofs);
 	specialSort(roofs, numberofroofs);
@@ -119,21 +125,17 @@ int main(){
 	}
 	int j;
 	for(i = numberofroofs-1; i >=0; i--){
-		if((rain[roofs[i].left.x] == 1) && (rain[roofs[i].right.x] == 1)){
-			*roofs[i].weight -=1;
-		}
 		for(j = roofs[i].left.x; j <= roofs[i].right.x; j++){
-			*roofs[i].weight += rain[j-leftmost];
-//			rain[j-leftmost] = 0;
 			if (j != roofs[i].right.x){
+				*roofs[i].weight += rain[j-leftmost];
 				rain[j-leftmost] = 0;
 			}
-
+			if (roofs[i].right.x != rightmost){
+			*roofs[i].weight += piping[j-leftmost][1];
+			piping[j-leftmost][1]=0;    
+			}
 		}
-		rain[findHighLowX(roofs, i, 0)-leftmost] += *roofs[i].weight;
-//		if(roofs[i].left.y < roofs[i].right.y){
-//			rain[findHighLowX(roofs, i, 0)-leftmost] +=1;
-//		}
+		piping[findHighLowX(roofs, i, 0)-leftmost][1] = *roofs[i].weight;
 	}
 
 	//Printing
