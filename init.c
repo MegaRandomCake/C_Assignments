@@ -5,9 +5,11 @@ typedef struct {
 	int length, linenumber;
 } Point;
 
-//variables initializiation
-int curr = 0, prev = 0, NumberX = 0, NumberO = 0,
-		NumberATo = 0, NumberATx = 0, MAXIMUM = 0, linecounter = -1, prevLineCounter = 0, switchcounter = 0, totallinecounter = 0, breaker = 1;
+//variables initializiation 
+//NumberATo counts special character when counting o's and numberATx counts special characters when counting x's
+//MAXIMUM is current highest continious line of x and o characters for where to break the chain
+int curr = 0, prev = 0, NumberX = 0, NumberO = 0, NumberATo = 0, NumberATx = 0, MAXIMUM = 0, 
+linecounter = -1, prevLineCounter = 0, switchcounter = 0, totallinecounter = 0, breaker = 1;
 Point maks;
 
 //function for
@@ -16,6 +18,7 @@ void TheMagic(){
 
 	//Special characters
 	if(curr == 64){//64@ 120x 111o
+		//if previous character is a x
 		if(prev == 120){
 			NumberATx++;
 		}
@@ -25,24 +28,25 @@ void TheMagic(){
 
 	}
 	else{
-		//if current character == the previous character 
+		//if current character == the previous character or if current character is the first character
 		if(curr == prev || prev == 0){
-			//if current is a special character
+			//if current is a x
 			if(curr == 120){
 				NumberX++;
 			}
+			//if current character is an o
 			else if(curr == 111){
 				NumberO++;
 			}
 		}
 		else{
-			//skift
+			//if last line of characters is higher than current maximum line of character, shift to new value
 			if(NumberATo + NumberATx + NumberO + NumberX >= MAXIMUM){
 				MAXIMUM = NumberATo + NumberATx + NumberO + NumberX;
 				maks.length = MAXIMUM;
 				maks.linenumber = prevLineCounter;
 			}
-
+			//if current character is a x, set xcounter to 1 and
 			if(curr == 120){
 				NumberX = 1;
 				NumberATx = 0;
@@ -54,7 +58,7 @@ void TheMagic(){
 			prevLineCounter = linecounter;
 			switchcounter++;
 		}
-
+		//switches current character to the new previous character
 		prev = curr;
 	}
 }
@@ -65,23 +69,26 @@ int main(void) {
 	inputfile = fopen(NECKLACE.dat, "r");
 
 	if(inputfile){
-
+		//specifies the file for output
 		FILE *outputfile;
-		outputfile = fopen(NECKLACE.sol, "w"); //w means the file is created. If another file exists with the same name it is deleted.
+		//w means the file is created. If another file exists with the same name it is deleted.
+		outputfile = fopen(NECKLACE.sol, "w"); 
 		totallinecounter = 0;
-
+		
+		//sets variables values back to first assigned values and goes back to start of file
 		while(breaker != -1){
 			curr = 0, prev = 0, NumberX = 0, NumberO = 0,
 					NumberATo = 0, NumberATx = 0, MAXIMUM = 0, linecounter = -1, prevLineCounter = 0, switchcounter = 0;
 			fseek(inputfile,totallinecounter, SEEK_SET);
-
+		//runs after the end of file from the start of the file.
 		while((curr = getc(inputfile)) != EOF && curr != 10){
 			fprintf(outputfile, "%c", curr);
 			TheMagic();
 		}
 		breaker = curr;
 		int temp = ftell(inputfile);
-		fseek(inputfile, totallinecounter, SEEK_SET); //Let's read from the beginning
+		//Let's read from the beginning
+		fseek(inputfile, totallinecounter, SEEK_SET);
 		totallinecounter = temp;
 		linecounter = -1;
 		switchcounter = 0;
