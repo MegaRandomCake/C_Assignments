@@ -10,8 +10,8 @@ int numberofcaptures = 1;
 FILE *logfil;
 
 void capturing(){
-	CvCapture* capture = cvCaptureFromCAM( 0 );
-	if( capture )
+	CvCapture* capture = cvCaptureFromCAM( 0 ); //starts capturing camera footage
+	if( capture ) //if camera is capturing
 	{
 		struct tm *info;
 		time_t rawtime;
@@ -48,7 +48,7 @@ void capturing(){
 			cvAbsDiff(previous, res, endres); //find any differing pixels between previous frame and current frame
 			cvThreshold(endres, endendres, 20, 255, CV_THRESH_BINARY | CV_THRESH_TOZERO); //set a threshold to limit random noise and small inconsquential changes
 			if(config){
-				color = CV_RGB(0,0,0);
+				color = CV_RGB(0,0,0); //sets color of black box to, well duh, black
 				int configlength = 0;
 				fscanf(config, "%d", &configlength);
 				for(i = 0; i < configlength * 4; i++){
