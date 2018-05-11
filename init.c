@@ -1,33 +1,20 @@
 #include <stdio.h>
 #include <io.h>
-/*
-
-                 \   /
-                 .\-/.
-             /\  () ()  /\
-            /  \ /~-~\ /  \
-                y  Y  V
-          ,-^-./   |   \,-^-.
-         /    {    |    }    \
-               \   |   /
-               /\  A  /\
-              /  \/ \/  \
-             /           \
- */
+//Only these should be stuffed into NECKLACE.sol. This is why they are in their own struct.
 typedef struct {
 	int length, linenumber;
 } Point;
-//Only these should be stuffed into NECKLACE.sol. This is why they are in their own struct.
 
-//These should not.
+//variables initializiation
 int curr = 0, prev = 0, NumberX = 0, NumberO = 0,
 		NumberATo = 0, NumberATx = 0, MAXIMUM = 0, linecounter = -1, prevLineCounter = 0, switchcounter = 0, totallinecounter = 0, breaker = 1;
 Point maks;
 
+//function for
 void TheMagic(){
 	linecounter++;
 
-	//Specialtegn
+	//Special characters
 	if(curr == 64){//64@ 120x 111o
 		if(prev == 120){
 			NumberATx++;
@@ -38,8 +25,9 @@ void TheMagic(){
 
 	}
 	else{
-		//ligmed hinanden
+		//if current character == the previous character 
 		if(curr == prev || prev == 0){
+			//if current is a special character
 			if(curr == 120){
 				NumberX++;
 			}
@@ -72,8 +60,7 @@ void TheMagic(){
 }
 
 int main(void) {
-	//DO NOT, i repeat DO NOT touch these 3 lines. they took me 45 mins to make.
-
+	
 	FILE *inputfile;
 	inputfile = fopen(NECKLACE.dat, "r");
 
@@ -98,11 +85,12 @@ int main(void) {
 		totallinecounter = temp;
 		linecounter = -1;
 		switchcounter = 0;
-
+		
+		//runs TheMagic() function while current character hasnt reached EOF (End of file) and current character isnt "10"
 		while(((curr = getc(inputfile)) != EOF) && curr != 10){
 			TheMagic();
 		}
-
+		//writes parameter to "outputfile"
 		fprintf(outputfile,"\n%d between stone %d and stone %d\n", maks.length, maks.linenumber, maks.linenumber+1);
 
 		}
@@ -114,9 +102,11 @@ int main(void) {
 	//Creates a file and shows it to the user.
 	else{
 		inputfile = fopen(NECKLACE.dat, "a");
+		//prints to the file "inputfile"
 		fprintf(inputfile, "This file have been created on your desktop, to draw a beautiful necklace consisting of 'x', 'o' and '@'."
 				"\nPlease make a necklace, save it and restart the application."
 				"\nRemember to delete this .dat file and the .sol result file when done with the application.");
+		//closes the file
 		fclose(inputfile);
 		system(inputname);
 	}
