@@ -95,14 +95,18 @@ void specialSort(line* arr, int n){
 int main(){
 	//Variables
 	int numberofroofs = 0, leftmost = 2147483647, rightmost = 0, i;
-	scanf("%d", &numberofroofs);//scans number of roof elements
+	//scans number of roof elements
+	scanf("%d", &numberofroofs);
+	//allocates memory for waterweight ints
 	int* waterweight = (int*)calloc(numberofroofs, sizeof(int));
+	//allocates memory for struct line element
 	line* roofs = (line*)calloc(numberofroofs, sizeof(line));
 
 	//Init
 	if(numberofroofs == 0){
 		leftmost = 0;
 	}
+	//scans input for x and y values for the two points of one roof, it scans n number of roofs, where n is the number of roofs
 	for(i = 0; i < numberofroofs; i++) {
 		scanf("%d %d %d %d", &roofs[i].left.x, &roofs[i].left.y, &roofs[i].right.x, &roofs[i].right.y);
 		if(roofs[i].left.x < leftmost){
