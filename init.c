@@ -48,15 +48,16 @@ void capturing(){
 			cvAbsDiff(previous, res, endres); //find any differing pixels between previous frame and current frame
 			cvThreshold(endres, endendres, 20, 255, CV_THRESH_BINARY | CV_THRESH_TOZERO); //set a threshold to limit random noise and small inconsquential changes
 			if(config){
-				color = CV_RGB(0,0,0); //sets color of black box to, well duh, black
+				color = CV_RGB(0,0,0); //sets color to black
 				int configlength = 0;
-				fscanf(config, "%d", &configlength);
+				fscanf(config, "%d", &configlength); //scans input of how many blackboxes
 				for(i = 0; i < configlength * 4; i++){
-					fscanf(config, "%d", &configs[j++]);
-						if(configs[3] != -1){
+					fscanf(config, "%d", &configs[j++]); //scans input of cordinates for all corners of all blackboxes
+						if(configs[3] != -1){ //if corners of rectangle isnt outside the screen
 							j = 0;
-							configs[3] = -1;
+							//creates blackbox rectangle with black pixels
 							cvRectangle(endendres, cvPoint(configs[0], configs[1]), cvPoint(configs[2], configs[3]), color, CV_FILLED, 8, 0 );
+							configs[3] = -1;
 						}
 					}
 				}
